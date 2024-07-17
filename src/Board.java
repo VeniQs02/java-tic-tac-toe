@@ -1,6 +1,8 @@
 public class Board {
-    private int sizeX, sizeY;
+    private int sizeX;
+    private int sizeY;
     private char[][] gameBoard;
+    public char currentPlayerSign;
 
     Board(int[] gameBoardSize){
         try {
@@ -31,6 +33,27 @@ public class Board {
         }
     }
 
+    protected boolean checkForWinCondition(int pos1, int pos2){
+//        if(game[0][0] == board[1][1] && board[1][1] == board[2][2] ) return 1;
+//        else if(board[0][2] == board[1][1] && board[1][1] == board[2][0]) return 1;
+//        else if(board[0][0] == board[0][1] && board[0][1] == board[0][2]) return 1;
+//        else if(board[1][0] == board[1][1] && board[1][1] == board[1][2]) return 1;
+//        else if(board[2][0] == board[2][1] && board[2][1] == board[2][2]) return 1;
+//        else if(board[0][0] == board[1][0] && board[1][0] == board[2][0]) return 1;
+//        else if(board[0][1] == board[1][1] && board[1][1] == board[2][1]) return 1;
+//        else if(board[0][2] == board[1][2] && board[1][2] == board[2][2]) return 1;
+        return false;
+    }
+
+
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    public int getSizeY() {
+        return sizeY;
+    }
+
     @Override
     public String toString(){
         StringBuilder str = new StringBuilder();
@@ -43,7 +66,6 @@ public class Board {
                         str.append(gameBoard[i][j]).append(" ");
                     }
                 }
-
                 str.append("\n");
                 if(i != gameBoard.length -1){
                     for(int k = 0; k < gameBoard[0].length * 4 -3; k++){
@@ -54,7 +76,6 @@ public class Board {
                         }
                     }
                 }
-
                 str.append("\n");
             }
         }
