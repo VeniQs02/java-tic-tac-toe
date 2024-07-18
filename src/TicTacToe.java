@@ -71,14 +71,13 @@ public class TicTacToe {
         } catch (Exception e) {
             System.out.println("Error! " + e);
         }
-
         return finalBoardSizeArray;
     }
 
     private char[] acquireUserInputForSymbols(){
         System.out.println("\n\n Please input two or more characters/symbols you would like to play with \n (eg. x y)");
         char[] finalUserCharArray = null;
-        Scanner s = null;
+        Scanner s;
         try {
             s = new Scanner(System.in);
             boolean wasInputTaken = false;
@@ -98,17 +97,12 @@ public class TicTacToe {
                     wasInputTaken = true;
                     finalUserCharArray = userCharArray;
                 } catch (Exception e) {
-                    System.out.println(e);
+                    System.out.println("Error! " + e);
                 }
             }
         } catch (Exception e) {
-            System.out.println(e);
-        } finally {
-//            if (s != null) {
-//                s.close();
-//            }
+            System.out.println("Error! " + e);
         }
-
         return finalUserCharArray;
     }
 
