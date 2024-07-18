@@ -1,26 +1,34 @@
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class TicTacToe {
 
     private int[] gameBoardDimensions;
+    private char[] gameSymbols;
 
-    TicTacToe(){
-        //acquiring user input
-//        gameBoardDimensions = acquireUserInput();
-        gameBoardDimensions = new int[] {3};
+    TicTacToe(boolean defaultPreset){
+        if(defaultPreset){
+            gameBoardDimensions = new int[] {3};
+            gameSymbols = new char[]{'X', 'O'};
+        }else{
+            gameBoardDimensions = acquireUserInputForSize();
+        }
 
-        //setting up game board
         if (gameBoardDimensions != null) {
             Board gameBoard = new Board(gameBoardDimensions);
             System.out.println(gameBoard.getSizeX() + " x " + gameBoard.getSizeY() + " sized board chosen! \n" + gameBoard);
-            aquireUserInputForSymbols();
-
-            boolean isWinConditionMet = false;
-            while(!isWinConditionMet){
-
-                isWinConditionMet = gameBoard.checkForWinCondition(1, 2);
+            if(!defaultPreset){
+                gameSymbols = acquireUserInputForSymbols();
             }
+            System.out.println(userSymbolsMessage());
+
+//            boolean isWinConditionMet = false;
+//            while(!isWinConditionMet){
+//
+//                isWinConditionMet = gameBoard.checkForWinCondition(1, 2);
+//            }
 
         } else {
             System.out.println("Failed to initialize the board.");
@@ -35,7 +43,8 @@ public class TicTacToe {
                 Input board size:""");
 
         int[] finalBoardSizeArray = null;
-        try (Scanner s = new Scanner(System.in)) {
+        Scanner s = new Scanner(System.in);
+        try {
             boolean wasInputTaken = false;
             while (!wasInputTaken) {
                 try {
@@ -62,29 +71,56 @@ public class TicTacToe {
         } catch (Exception e) {
             System.out.println("Error! " + e);
         }
-        // closing a scanner
+
         return finalBoardSizeArray;
     }
-    private char[] aquireUserInputForSymbols(){
-        System.out.println("\n\n Please input two or more characters/symbols you would like to play with \n (eg. x y)");
-        try{
-            Scanner s = new Scanner(System.in);
-            boolean wasInputTaken = false;
-            while(wasInputTaken){
-                try{
-                    String userSymbols = s.nextLine();
 
-                }catch(Exception e){
+    private char[] acquireUserInputForSymbols(){
+        System.out.println("\n\n Please input two or more characters/symbols you would like to play with \n (eg. x y)");
+        char[] finalUserCharArray = null;
+        Scanner s = null;
+        try {
+            s = new Scanner(System.in);
+            boolean wasInputTaken = false;
+            while (!wasInputTaken) {
+                try {
+                    String userSymbols = s.nextLine();
+                    String[] userSymbolsArray = userSymbols.toUpperCase().split(" ");
+                    Set<Character> uniqueChars = new HashSet<>();
+                    for (String symbol : userSymbolsArray) {
+                        uniqueChars.add(symbol.charAt(0));
+                    }
+                    char[] userCharArray = new char[uniqueChars.size()];
+                    int i = 0;
+                    for (char c : uniqueChars) {
+                        userCharArray[i++] = c;
+                    }
+                    wasInputTaken = true;
+                    finalUserCharArray = userCharArray;
+                } catch (Exception e) {
                     System.out.println(e);
                 }
             }
-
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e);
-        }finally {
+        } finally {
+//            if (s != null) {
 //                s.close();
+//            }
         }
 
+        return finalUserCharArray;
+    }
 
+    private String userSymbolsMessage(){
+        StringBuilder symbolsMessage = new StringBuilder();
+        for(int i = 0; i<gameSymbols.length; i++){
+            if(i!=gameSymbols.length-1){
+                symbolsMessage.append(gameSymbols[i]).append(", ");
+            }else{
+                symbolsMessage.append(gameSymbols[i]).append(" ");
+            }
+        }
+        return symbolsMessage.append("symbols chosen! \n").toString();
     }
 }
