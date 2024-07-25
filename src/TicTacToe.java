@@ -31,7 +31,7 @@ public class TicTacToe {
 //            }
 
         } else {
-            System.out.println("Failed to initialize the board.");
+            System.out.println("\u001B[91m> ERROR - Failed to initialize the board.\u001B[0m");
         }
     }
 
@@ -39,8 +39,8 @@ public class TicTacToe {
         System.out.println("""
                 x   - for a square board
                 x y - for a rectangular board shape
-                eg. input '2 3' in the console for a 2x3 rectangular board
-                Input board size:""");
+                (eg. input '2 3' in the console for a 2x3 rectangular board)
+                \u001B[97mInput board size:\u001B[0m""");
 
         int[] finalBoardSizeArray = null;
         Scanner s = new Scanner(System.in);
@@ -51,7 +51,7 @@ public class TicTacToe {
                     String boardSizeInput = s.nextLine();                                                               // getting user input
                     String[] boardSizeStringArray = boardSizeInput.split(" ");
                     if (boardSizeStringArray.length > 2) {                                                              // checking if input length is less or equal to 2
-                        System.out.println("More size parameters than 2 will be ignored!");
+                        System.out.println("\u001B[93m> WARNING - More size parameters than 2 will be ignored!\u001B[0m");
                         boardSizeStringArray = Arrays.copyOfRange(boardSizeStringArray, 0, 2);                  // trimming if necessary
                     }
 
@@ -60,22 +60,30 @@ public class TicTacToe {
                         boardSizeIntArray[i] = Integer.parseInt(boardSizeStringArray[i]);
                     }
 
+                    if(boardSizeIntArray[0]<3 || boardSizeIntArray[1]<3){
+                        System.out.println("\u001B[93m> WARNING - Boards with size lesser than 3, might not be suitable for meeting the win condition!\u001B[0m");
+                    }
+
                     finalBoardSizeArray = boardSizeIntArray;                                                            // if performed successfully, then step out of the loop
                     wasInputTaken = true;
                 } catch (NumberFormatException e) {
                     System.out.println("Please input a number 'X' or a set of two numbers 'X' and 'Y'");                // in case user inputs nothing or string values
                 } catch (Exception e) {
-                    System.out.println("Error! " + e);
+                    System.out.println("\u001B[91m> ERROR - " + e + "\u001B[0m");
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error! " + e);
+            System.out.println("\u001B[91m> ERROR - " + e + "\u001B[0m");
         }
         return finalBoardSizeArray;
     }
 
-    private char[] acquireUserInputForSymbols(){
-        System.out.println("\n\n Please input two or more characters/symbols you would like to play with \n (eg. x y)");
+    private static char[] acquireUserInputForSymbols() {
+        System.out.println("""                       
+                            If the symbol contains multiple letters, only the first one will be chosen
+                            (e.g. x y)
+                            \u001B[97mPlease input two or more characters/symbols you would like to play with\u001B[0m \n""");
+
         char[] finalUserCharArray = null;
         Scanner s;
         try {
@@ -83,25 +91,37 @@ public class TicTacToe {
             boolean wasInputTaken = false;
             while (!wasInputTaken) {
                 try {
-                    String userSymbols = s.nextLine();
-                    String[] userSymbolsArray = userSymbols.toUpperCase().split(" ");
+                    String userSymbols = s.nextLine().trim();
+                    if (userSymbols.isEmpty()) {
+                        System.out.println("Input cannot be empty. Please input at least 2 unique symbols.");
+                        continue;
+                    }
+
+                    String[] userSymbolsArray = userSymbols.split("\\s+");
                     Set<Character> uniqueChars = new HashSet<>();
                     for (String symbol : userSymbolsArray) {
-                        uniqueChars.add(symbol.charAt(0));
+                        if (!symbol.isEmpty()) {
+                            uniqueChars.add(symbol.charAt(0));
+                        }
                     }
+
                     char[] userCharArray = new char[uniqueChars.size()];
                     int i = 0;
                     for (char c : uniqueChars) {
                         userCharArray[i++] = c;
                     }
-                    wasInputTaken = true;
-                    finalUserCharArray = userCharArray;
+                    if (userCharArray.length < 2) {
+                        System.out.println("Please input at least 2 unique symbols.");
+                    } else {
+                        wasInputTaken = true;
+                        finalUserCharArray = userCharArray;
+                    }
                 } catch (Exception e) {
-                    System.out.println("Error! " + e);
+                    System.out.println("\u001B[91m> ERROR - " + e + "\u001B[0m");
                 }
             }
         } catch (Exception e) {
-            System.out.println("Error! " + e);
+            System.out.println("\u001B[91m> ERROR - " + e + "\u001B[0m");
         }
         return finalUserCharArray;
     }
