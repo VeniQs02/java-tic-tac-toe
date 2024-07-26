@@ -6,6 +6,7 @@ The board can be any size the user desires, and also there are a customizable nu
 If the user insists on using the default 3x3 X-O preset, then he should create a new object of TicTacToe with parameter of 'true'
 
 Gameplay:
+
 ![image](https://github.com/user-attachments/assets/7210bb56-9a19-4f5b-b2e9-a58b21f462ad)
 ![image](https://github.com/user-attachments/assets/47a3dbfc-8d9d-4f33-9363-5d47cd4170aa)
 ![image](https://github.com/user-attachments/assets/155739d4-6e15-47cc-8625-1feb8f8488eb)
