@@ -1,8 +1,12 @@
+import java.util.InputMismatchException;
+import java.util.Scanner;
+
 public class Board {
     private int sizeX;
     private int sizeY;
     private char[][] gameBoard;
-    public char currentPlayerSign;
+    private char[] playerSigns;
+    private int currentPlayerIndex;
 
     Board(int[] gameBoardSize){
         try {
@@ -31,20 +35,96 @@ public class Board {
                 gameBoard[i][j] = ' ';
             }
         }
+        currentPlayerIndex = 0;
     }
 
-    protected boolean checkForWinCondition(int pos1, int pos2){
-//        if(game[0][0] == board[1][1] && board[1][1] == board[2][2] ) return 1;
-//        else if(board[0][2] == board[1][1] && board[1][1] == board[2][0]) return 1;
-//        else if(board[0][0] == board[0][1] && board[0][1] == board[0][2]) return 1;
-//        else if(board[1][0] == board[1][1] && board[1][1] == board[1][2]) return 1;
-//        else if(board[2][0] == board[2][1] && board[2][1] == board[2][2]) return 1;
-//        else if(board[0][0] == board[1][0] && board[1][0] == board[2][0]) return 1;
-//        else if(board[0][1] == board[1][1] && board[1][1] == board[2][1]) return 1;
-//        else if(board[0][2] == board[1][2] && board[1][2] == board[2][2]) return 1;
+    public void playersMove(){
+        System.out.println("\u001B[97mPlayer '" + playerSigns[currentPlayerIndex] + "' turn!\u001B[0m \n" +
+                "Please pick column number (less or equal to " + sizeX + ");");
+        boolean wasInputTaken = false;
+        Scanner s = new Scanner(System.in);
+        try{
+            while(!wasInputTaken){
+                try{
+                    int playerInputCol = s.nextInt();
+                    System.out.println("Please pick row number (less or equal to " + sizeY + ")");
+                    int playerInputRow = s.nextInt();
+                    if(gameBoard[playerInputRow-1][playerInputCol-1] != ' '){
+                        System.out.println("Field already taken! Please pick another one!");
+                    }else{
+                        gameBoard[playerInputRow-1][playerInputCol-1] = playerSigns[currentPlayerIndex];
+                        System.out.println(this);
+                        currentPlayerIndex = (currentPlayerIndex + 1) % playerSigns.length;
+                        wasInputTaken = true;
+                    }
+
+                }catch(InputMismatchException e){
+                    System.out.println("\u001B[91m> ERROR - " + e + " - Please input a number!\u001B[0m");
+                    s.nextInt(); // Clear invalid input
+                }catch(Exception e){
+                    System.out.println("\u001B[91m> ERROR - " + e + "\u001B[0m");
+                    System.out.println("Please pick column number (less or equal to " + sizeX + ")");
+                }
+            }
+        }catch(Exception e){
+            System.out.println("\u001B[91m> ERROR - " + e + "\u001B[0m");
+        }
+    }
+
+    protected boolean checkForWinCondition(char playerSymbol) {
+        // Check horizontal lines
+        for (int i = 0; i < sizeX; i++) {
+            for (int j = 0; j < sizeY - 2; j++) {
+                if (gameBoard[i][j] == playerSymbol &&
+                        gameBoard[i][j + 1] == playerSymbol &&
+                        gameBoard[i][j + 2] == playerSymbol) {
+                    return true;
+                }
+            }
+        }
+        // Check vertical lines
+        for (int i = 0; i < sizeX - 2; i++) {
+            for (int j = 0; j < sizeY; j++) {
+                if (gameBoard[i][j] == playerSymbol &&
+                        gameBoard[i + 1][j] == playerSymbol &&
+                        gameBoard[i + 2][j] == playerSymbol) {
+                    return true;
+                }
+            }
+        }
+        // Check main diagonal lines
+        for (int i = 0; i < sizeX - 2; i++) {
+            for (int j = 0; j < sizeY - 2; j++) {
+                if (gameBoard[i][j] == playerSymbol &&
+                        gameBoard[i + 1][j + 1] == playerSymbol &&
+                        gameBoard[i + 2][j + 2] == playerSymbol) {
+                    return true;
+                }
+            }
+        }
+        // Check anti-diagonal lines
+        for (int i = 0; i < sizeX - 2; i++) {
+            for (int j = 2; j < sizeY; j++) {
+                if (gameBoard[i][j] == playerSymbol &&
+                        gameBoard[i + 1][j - 1] == playerSymbol &&
+                        gameBoard[i + 2][j - 2] == playerSymbol) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
+    public boolean isBoardFull() {
+        for (int i = 0; i < sizeX; i++) {
+            for (int j = 0; j < sizeY; j++) {
+                if (gameBoard[i][j] == ' ') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     public int getSizeX() {
         return sizeX;
@@ -52,6 +132,14 @@ public class Board {
 
     public int getSizeY() {
         return sizeY;
+    }
+
+    public char getCurrentPlayerSign() {
+        return playerSigns[(currentPlayerIndex + playerSigns.length - 1) % playerSigns.length];
+    }
+
+    public void setPlayerSigns(char[] playerSigns) {
+        this.playerSigns = playerSigns;
     }
 
     @Override
